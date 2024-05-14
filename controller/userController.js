@@ -1,5 +1,6 @@
 import User from "../model/userModel.js";
 import emailValidator from "email-validator";
+import bcrypt  from 'bcrypt';
 
 
 const registration = async (req,res) => {
@@ -89,7 +90,7 @@ const signIn = async (req,res) => {
         email
     }).select('+password');
 
-    if (!userPresentOrNot || password !== userPresentOrNot.password) {
+    if (!userPresentOrNot || ! bcrypt.compare(password, userPresentOrNot.password)) {
         res.status(400).json({
             success:false,
             message:"Invalid credentials"
@@ -117,9 +118,50 @@ const signIn = async (req,res) => {
             message:`Error occured ${error.message}`
         })
     }
+}
 
-   
+
+
+const userDetails = async (req,res) =>{
+    const userId = req.user.id
+
+    try {
+        const user = await User.findById(userId)
+        return res.status(200).json({
+            success:true,
+            message:user
+        })
+    } catch (error) {
+        return res.status(400).json({
+            success:false,
+            message:error.message
+        })
+    }
+}
+
+
+
+const logOut = (req,res) => {
+
+    try {
+        const cookieOptions = {
+            expires:new Date(),
+            httpOnly:true
+        }
+
+        res.cookie("token",null,cookieOptions)
+        res.status(200).json({
+            success:true,
+            message:"Logged out"
+        })
+
+    } catch (error) {
+        res.status(400).json({
+            success:false,
+            message:error.message
+        })
+    }
 
 }
 
-export {registration,signIn};
+export {registration,signIn,userDetails,logOut};

@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { registration, signIn } from "../controller/userController.js";
+import { logOut, registration, signIn, userDetails } from "../controller/userController.js";
+import { jwtAuth } from "../middleware/jwtAuth.js";
 
 const router = Router();
 
@@ -18,7 +19,8 @@ router.get("/",((req,res)=> {
 }))
 
 router.post('/signup',registration)
-
 router.post('/signin',signIn)
+router.get('/user',jwtAuth,userDetails)
+router.get('/logout',jwtAuth,logOut)
 
 export default router;
