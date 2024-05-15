@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { logOut, registration, signIn, userDetails } from "../controller/userController.js";
 import { jwtAuth } from "../middleware/jwtAuth.js";
+import upload from "../middleware/multer.middleware.js";
 
 const router = Router();
 
@@ -18,7 +19,7 @@ router.get("/",((req,res)=> {
     }
 }))
 
-router.post('/signup',registration)
+router.post('/signup',upload.single("avatar"),registration)
 router.post('/signin',signIn)
 router.get('/user',jwtAuth,userDetails)
 router.get('/logout',jwtAuth,logOut)

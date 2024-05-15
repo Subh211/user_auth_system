@@ -20,11 +20,18 @@ const userSchema = new Schema({
     },
     confirmPassword:{
         type:String
+    },
+    avatar: {
+        public_id: {
+          type: String,
+        },
+        secure_url: {
+          type: String,
+        }
     }
-
 });
 
-userSchema.pre('create',async function(next) {
+userSchema.pre('save',async function(next) {
     if (!this.isModified ('password') ) {
         next();
     }
